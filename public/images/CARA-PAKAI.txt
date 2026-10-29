@@ -1,0 +1,8 @@
+Taruh gambar di folder ini dengan nama persis seperti di src/data.js:
+
+  foto-profil.jpg                            foto di kartu ID (portrait, latar polos, dada ke atas)
+  proyek-01.jpg ... proyek-12.jpg            screenshot proyek (landscape 16:10)
+  sertifikat-01.jpg ... sertifikat-03.jpg    foto/scan sertifikat (4:3)
+
+Format .jpg, .png, atau .webp boleh, tapi nama file harus sama dengan yang tertulis di src/data.js
+(ubah di sana kalau ekstensinya berbeda). Gambar yang belum ada tampil sebagai placeholder.
