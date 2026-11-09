@@ -48,6 +48,7 @@ export const CERTS = [
   { title: "MikroTik Certified Network Associate (MTCNA)", meta: "Sertifikasi", image: "/images/sertifikat-01.jpg" },
   { title: "Sertifikat praktik kerja lapangan", meta: "PT. Tera Data Indonusa", image: "/images/sertifikat-02.jpg" },
   { title: "Sertifikat magang", meta: "KPPBC TMP A Purwakarta", image: "/images/sertifikat-03.png" },
+  { title: "Sertifikat praktik kerja lapangan", meta: "PT. Indorama Synthetics TBK polyester division", image: "/images/sertifikat-04.jpg" },
 ];
 
 // Nama kategori dipakai oleh CSS untuk fitur sorot, jadi jangan diganti.
