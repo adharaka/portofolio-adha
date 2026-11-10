@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PROFILE, EXPERIENCE, PROJECTS, CERTS, SKILLS, MARQUEE } from "./data.js";
+import Welcome from "./Welcome.jsx";
 
 function Img({ src, alt = "", fallback, onOpen }) {
   const [bad, setBad] = useState(false);
@@ -48,7 +49,7 @@ function Lightbox({ lb, setLb }) {
   );
 }
 
-function Badge() {
+function Badge({ go }) {
   const sw = useRef(null);
   const [back, setBack] = useState(false);
   const s = useRef({ a: 0, v: 0, dr: false, sx: 0, sa: 0, pa: 0, mv: false, calm: false });
@@ -56,7 +57,7 @@ function Badge() {
   useEffect(() => {
     const st = s.current;
     st.calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (st.calm) return;
+    if (st.calm || !go) return;
     st.a = 14;
     let raf;
     const tick = () => {
@@ -66,7 +67,7 @@ function Badge() {
     };
     tick();
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [go]);
 
   const down = (e) => { const st = s.current; if (st.calm) return; st.dr = true; st.mv = false; st.sx = e.clientX; st.sa = st.a; st.pa = st.a; e.currentTarget.setPointerCapture(e.pointerId); };
   const move = (e) => { const st = s.current; if (!st.dr) return; const d = e.clientX - st.sx; if (Math.abs(d) > 5) st.mv = true; st.pa = st.a; st.a = Math.max(-38, Math.min(38, st.sa + d * 0.22)); st.v = 0; };
@@ -124,6 +125,17 @@ export default function App() {
   const [filter, setFilter] = useState(null);
   const [active, setActive] = useState("");
   const [lb, setLb] = useState(null);
+  const shell = useRef(null);
+  const [entered, setEntered] = useState(() => {
+    if (new URLSearchParams(location.search).has("welcome")) return false;
+    try { return sessionStorage.getItem("welcome") === "1"; } catch { return false; }
+  });
+  const finishWelcome = () => { try { sessionStorage.setItem("welcome", "1"); } catch {} scrollTo(0, 0); setEntered(true); };
+  useLayoutEffect(() => {
+    const r = document.documentElement;
+    if (entered) delete r.dataset.intro; else r.dataset.intro = "on";
+    shell.current?.toggleAttribute("inert", !entered);
+  }, [entered]);
   const bar = useRef(null), ring = useRef(null), top = useRef(null), hdr = useRef(null);
 
   useEffect(() => {
@@ -172,6 +184,8 @@ export default function App() {
 
   return (
     <>
+      {!entered && <Welcome onDone={finishWelcome} />}
+      <div ref={shell}>
       <i id="pg" ref={bar} />
       <header ref={hdr}>
         <div className="w">
@@ -193,7 +207,7 @@ export default function App() {
               <p className="lead">Saya {PROFILE.name}, Staff IT di {PROFILE.company}. Saya mengerjakan ERP, dashboard produksi, dan aplikasi operasional, dari analisis kebutuhan sampai database dan tampilan.</p>
               <div className="cta"><a className="btn p" href="#karya">Lihat karya</a><a className="btn" href="#kontak">Hubungi saya</a></div>
             </div>
-            <Badge />
+            <Badge go={entered} />
           </div>
         </section>
 
@@ -309,6 +323,7 @@ export default function App() {
       <button ref={top} className="top" aria-label="Kembali ke atas" onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
         <svg viewBox="0 0 48 48" aria-hidden="true"><circle ref={ring} cx="24" cy="24" r="22" /></svg><span aria-hidden="true">↑</span>
       </button>
+      </div>
     </>
   );
 }
